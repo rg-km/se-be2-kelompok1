@@ -38,6 +38,7 @@ function initSnake(color) {
         ...initHeadAndBody(),
         direction: initDirection(),
         life: DEFAULT_LIFE,
+        level: 1,
         score: 0,
     }
 }
@@ -88,6 +89,9 @@ function drawScore(snake) {
 
 function draw() {
     setInterval(function() {
+        if (snake1.score === 0) {
+            drawLevel(snake1.score);
+        }
         let snakeCanvas = document.getElementById("snakeBoard");
         let ctx = snakeCanvas.getContext("2d");
 
@@ -133,12 +137,14 @@ function eat(snake, apples, heart) {
             apple.position = initPosition();
             snake.score++;
             snake.body.push({x: snake.head.x, y: snake.head.y});
+            drawLevel(snake.score);
         } else if (snake.head.x == heart.position.x && snake.head.y == heart.position.y) {
             heart.position = initPosition();
             snake.score++;
             snake.life++;
             snake.body.push({x: snake.head.x, y: snake.head.y});
             console.log(snake.life);
+            drawLevel(snake.score);
         }
     }
 }
@@ -255,6 +261,32 @@ function checkPrim(snake) {
         return true;
     } else {
         return false;
+    }
+}
+
+function drawLevel(score) {
+    // console.log(score);
+    let levelCanvas = document.getElementById("levels");
+    let levelCtx = levelCanvas.getContext("2d");
+    if (score == 0) {
+        levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        levelCtx.font = "30px Arial";
+        levelCtx.fillStyle = snake1.color
+        levelCtx.fillText(snake1.level, 10, levelCanvas.scrollHeight / 2);
+    } else if ((score % 5) == 0) {
+        snake1.level++;
+        levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        levelCtx.font = "30px Arial";
+        levelCtx.fillStyle = snake1.color
+        levelCtx.fillText(snake1.level, 10, levelCanvas.scrollHeight / 2);
+        if (snake1.level <= 5) {
+            alert("level up");
+        } else {
+            alert("Win");
+            snake1 = initSnake("purple");
+            initGame();
+        }
+        
     }
 }
 

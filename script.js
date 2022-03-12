@@ -9,6 +9,7 @@ const DIRECTION = {
     UP: 2,
     DOWN: 3,
 }
+let DEFAULT_LIFE = 3;
 const MOVE_INTERVAL = 150;
 
 function initPosition() {
@@ -36,10 +37,16 @@ function initSnake(color) {
         color: color,
         ...initHeadAndBody(),
         direction: initDirection(),
+        life: DEFAULT_LIFE,
         score: 0,
     }
 }
 let snake1 = initSnake("green");
+
+let heart = {
+    color: "blue",
+    position: initPosition(),
+}
 
 let apples = [{
     color: "red",
@@ -96,6 +103,10 @@ function draw() {
             showIcon(ctx,"apple",apple.position.x * CELL_SIZE, apple.position.y * CELL_SIZE, CELL_SIZE,CELL_SIZE);
         }
 
+        if (checkPrim(snake1)) {
+                drawCell(ctx, heart.position.x, heart.position.y, heart.color, "lifeIcon");
+        }
+
         drawScore(snake1);
     }, REDRAW_INTERVAL);
 }
@@ -115,13 +126,19 @@ function teleport(snake) {
     }
 }
 
-function eat(snake, apple) {
+function eat(snake, apples, heart) {
     for (let i = 0; i < apples.length; i++) {
         let apple = apples[i];
         if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
             apple.position = initPosition();
             snake.score++;
             snake.body.push({x: snake.head.x, y: snake.head.y});
+        } else if (snake.head.x == heart.position.x && snake.head.y == heart.position.y) {
+            heart.position = initPosition();
+            snake.score++;
+            snake.life++;
+            snake.body.push({x: snake.head.x, y: snake.head.y});
+            console.log(snake.life);
         }
     }
 }
@@ -129,25 +146,25 @@ function eat(snake, apple) {
 function moveLeft(snake) {
     snake.head.x--;
     teleport(snake);
-    eat(snake, apples);
+    eat(snake, apples, heart);
 }
 
 function moveRight(snake) {
     snake.head.x++;
     teleport(snake);
-    eat(snake, apples);
+    eat(snake, apples, heart);
 }
 
 function moveDown(snake) {
     snake.head.y++;
     teleport(snake);
-    eat(snake, apples);
+    eat(snake, apples, heart);
 }
 
 function moveUp(snake) {
     snake.head.y--;
     teleport(snake);
-    eat(snake, apples);
+    eat(snake, apples, heart);
 }
 
 function checkCollision(snakes) {
@@ -224,6 +241,22 @@ document.addEventListener("keydown", function (event) {
     }
 
 })
+
+function checkPrim(snake) {
+    let score = snake.score;
+    let dibagi = 0;
+    for (let i = 0; i <= score; i++) {
+        if (score % i == 0) {
+            dibagi = dibagi + 1;
+        }
+    }
+
+    if (dibagi == 2) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function initGame() {
     move(snake1);

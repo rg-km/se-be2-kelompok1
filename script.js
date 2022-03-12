@@ -280,13 +280,13 @@ function drawLevel(score) {
         levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         levelCtx.font = "30px Arial";
         levelCtx.fillStyle = snake1.color
-        levelCtx.fillText(snake1.level, 10, levelCanvas.scrollHeight / 2);
+        levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
     } else if ((score % 5) == 0) {
         snake1.level++;
         levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         levelCtx.font = "30px Arial";
         levelCtx.fillStyle = snake1.color
-        levelCtx.fillText(snake1.level, 10, levelCanvas.scrollHeight / 2);
+        levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
         if (snake1.level <= 5) {
             alert("level up");
         } else {

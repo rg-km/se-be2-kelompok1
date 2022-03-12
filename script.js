@@ -10,7 +10,15 @@ const DIRECTION = {
     DOWN: 3,
 }
 let DEFAULT_LIFE = 3;
-const MOVE_INTERVAL = 150;
+let MOVE_INTERVAL = 150;
+
+const LEVELS = [
+    { level: 1, speed: 150, },
+    { level: 2, speed: 100, },
+    { level: 3, speed: 90, },
+    { level: 4, speed: 60, },
+    { level: 5, speed: 50, },
+];
 
 function initPosition() {
     return {
@@ -187,7 +195,7 @@ function checkCollision(snakes) {
     }
     if (isCollide) {
         alert("Game over");
-        snake1 = initSnake("purple");
+        snake1 = initSnake("green");
     }
     return isCollide;
 }
@@ -283,10 +291,14 @@ function drawLevel(score) {
             alert("level up");
         } else {
             alert("Win");
-            snake1 = initSnake("purple");
+            snake1 = initSnake("green");
             initGame();
         }
-        
+    }
+    for (var i = 0; i < LEVELS.length; i++) {
+        if (snake1.level == LEVELS[i].level) {
+            MOVE_INTERVAL = LEVELS[i].speed;
+        }
     }
 }
 

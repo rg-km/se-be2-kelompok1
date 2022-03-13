@@ -169,20 +169,29 @@ function drawCell(ctx, x, y, color, img = null) {
         showIcon(ctx, img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
 }
+function drawSpeed(snake) {
+    let speedCanvas;
+    speedCanvas = document.getElementById("speed");
+    let speedCtx = speedCanvas.getContext("2d");
+    speedCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    speedCtx.font = "30px Arial";
+    speedCtx.fillStyle = "black"
+    for (var i = 0; i < LEVELS.length; i++) {
+        if (snake.level == LEVELS[i].level) {
+            speedCtx.fillText("Speed : "+LEVELS[i].speed, 10, speedCanvas.scrollHeight / 2);
+        }
+    }
+}
 
 function drawScore(snake) {
     let scoreCanvas;
-    if (snake.color == snake1.color) {
-        scoreCanvas = document.getElementById("score1Board");
-    } else {
-        scoreCanvas = document.getElementById("score2Board");
-    }
+    scoreCanvas = document.getElementById("score1Board");
     let scoreCtx = scoreCanvas.getContext("2d");
 
     scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     scoreCtx.font = "30px Arial";
     scoreCtx.fillStyle = "black"
-    scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
+    scoreCtx.fillText("Score : " +snake.score, 10, scoreCanvas.scrollHeight / 2);
 }
 
 function draw() {
@@ -212,6 +221,7 @@ function draw() {
         }
 
         drawScore(snake1);
+        drawSpeed(snake1);
     }, REDRAW_INTERVAL);
 }
 
@@ -443,6 +453,7 @@ function drawLevel(score) {
         }
     }
 }
+
 
 function initGame() {
     move(snake1);

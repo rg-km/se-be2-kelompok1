@@ -222,13 +222,24 @@ function draw() {
             showIcon(ctx, "apple", apple.position.x * CELL_SIZE, apple.position.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
 
-        if (checkPrim(snake1)) {
-            drawCell(ctx, heart.position.x, heart.position.y, heart.color, "lifeIcon");
-        }
-
+        drawLife(snake1);
         drawScore(snake1);
         drawSpeed(snake1);
     }, REDRAW_INTERVAL);
+}
+
+function drawLife(snake) {
+    let snakeCanvas = document.getElementById("snakeBoard");
+    let ctx = snakeCanvas.getContext("2d");
+
+    if (checkPrim(snake)) {
+            drawCell(ctx, heart.position.x, heart.position.y, heart.color, "lifeIcon");
+    }
+
+    //menampilkan 3 nyawa
+    for (var i = 0; i < snake.life; i++) {
+        showIcon(ctx, "lifeIcon", 10 + (i * 20), 5, 20, 20);
+    }
 }
 
 function resetSnake(snake) {
@@ -354,6 +365,7 @@ function checkCollision(snakes) {
             alert("Game over");
             snake1 = initSnake("green");
         } else {
+            //mengurangi nyawa
             snake1.life--;
             snake1 = resetSnake(snake1);
         }

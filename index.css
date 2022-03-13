@@ -1,0 +1,24 @@
+body {
+  margin: 0 10%;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+#score1Board {
+  position: absolute;
+  left: 750px;
+  top: 25px;
+}
+
+#speed {
+  position: absolute;
+  left: 700px;
+  top: 450px;
+}
+
+#levels {
+  position: absolute;
+  left: 890px;
+  top: 25px;
+}

@@ -181,7 +181,7 @@ function drawSpeed(snake) {
     speedCanvas = document.getElementById("speed");
     let speedCtx = speedCanvas.getContext("2d");
     speedCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    speedCtx.font = "30px Arial";
+    speedCtx.font = "12px Arial";
     speedCtx.fillStyle = "black"
     for (var i = 0; i < LEVELS.length; i++) {
         if (snake.level == LEVELS[i].level) {
@@ -196,7 +196,7 @@ function drawScore(snake) {
     let scoreCtx = scoreCanvas.getContext("2d");
 
     scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    scoreCtx.font = "30px Arial";
+    scoreCtx.font = "12px Arial";
     scoreCtx.fillStyle = "black"
     scoreCtx.fillText("Score : " +snake.score, 10, scoreCanvas.scrollHeight / 2);
 }
@@ -454,15 +454,15 @@ function drawLevel(score) {
     let levelCtx = levelCanvas.getContext("2d");
     if (score == 0) {
         levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        levelCtx.font = "30px Arial";
+        levelCtx.font = "12px Arial";
         levelCtx.fillStyle = "black"
-        levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
+        levelCtx.fillText("🏆️ Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
     } else if ((score % 5) == 0) {
         snake1.level++;
         levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        levelCtx.font = "30px Arial";
+        levelCtx.font = "12px Arial";
         levelCtx.fillStyle = "black"
-        levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
+        levelCtx.fillText("🏆️ Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
         if (snake1.level <= 5) {
             levelUpSound.play();
             alert("level up");

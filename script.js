@@ -9,6 +9,7 @@ const DIRECTION = {
     UP: 2,
     DOWN: 3,
 }
+
 let DEFAULT_LIFE = 3;
 let MOVE_INTERVAL = 150;
 
@@ -156,6 +157,11 @@ let apples = [{
     position: initPosition(),
 }]
 
+const eatAppleSound = new Audio("assets/eat-apple.mp3");
+const collideSound = new Audio("assets/collide.mp3");
+const levelUpSound = new Audio("assets/level-up.wav");
+const winSound = new Audio("assets/win.wav");
+
 //menampilkan gambar
 function showIcon(ctx, path, x, y, width = 10, height = 10) {
     ctx.drawImage(document.getElementById(path), x, y, width, height);
@@ -249,6 +255,7 @@ function eat(snake, apples, heart) {
             snake.score++;
             snake.body.push({ x: snake.head.x, y: snake.head.y });
             drawLevel(snake.score);
+            eatAppleSound.play();
         } else if (snake.head.x == heart.position.x && snake.head.y == heart.position.y) {
             heart.position = initPosition();
             snake.score++;
@@ -311,6 +318,7 @@ function checkCollision(snakes) {
         for (let j = 0; j < snakes.length; j++) {
             for (let k = 1; k < snakes[j].body.length; k++) {
                 if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
+                    collideSound.play();
                     isCollide = true;
                 }
             }
@@ -324,6 +332,7 @@ function checkCollision(snakes) {
                 if (snake1.head.x >= (Math.floor(OBSTACLES[i].obstacle[j].position.x / CELL_SIZE)) && snake1.head.y >= (Math.floor(OBSTACLES[i].obstacle[j].position.y / CELL_SIZE))
                     && snake1.head.y <= (Math.floor(OBSTACLES[i].obstacle[j].position.height / HEIGHT)) + Math.floor(OBSTACLES[i].obstacle[j].position.y / CELL_SIZE)
                     && snake1.head.x < (Math.floor(OBSTACLES[i].obstacle[j].position.x / CELL_SIZE) + Math.ceil(OBSTACLES[i].obstacle[j].position.width / WIDTH))) {
+                    collideSound.play();
                     isCollide = true;
                 }
             }
@@ -430,8 +439,10 @@ function drawLevel(score) {
         levelCtx.fillStyle = "black"
         levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
         if (snake1.level <= 5) {
+            levelUpSound.play();
             alert("level up");
         } else {
+            winSound.play();
             alert("Win");
             snake1 = initSnake("green");
             initGame();

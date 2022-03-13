@@ -161,6 +161,7 @@ const eatAppleSound = new Audio("assets/eat-apple.mp3");
 const collideSound = new Audio("assets/collide.mp3");
 const levelUpSound = new Audio("assets/level-up.wav");
 const winSound = new Audio("assets/win.wav");
+const gameOverSound = new Audio("assets/game-over.mp3");
 
 //menampilkan gambar
 function showIcon(ctx, path, x, y, width = 10, height = 10) {
@@ -273,6 +274,7 @@ function eat(snake, apples, heart) {
             snake.body.push({ x: snake.head.x, y: snake.head.y });
             console.log(snake.life);
             drawLevel(snake.score);
+            eatAppleSound.play();
         }
     }
 }
@@ -351,6 +353,7 @@ function checkCollision(snakes) {
 
     if (isCollide) {
         if (snake1.life === 1) {
+            gameOverSound.play();
             alert("Game over");
             snake1 = initSnake("green");
         } else {

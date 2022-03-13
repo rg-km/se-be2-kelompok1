@@ -12,6 +12,96 @@ const DIRECTION = {
 let DEFAULT_LIFE = 3;
 let MOVE_INTERVAL = 150;
 
+const OBSTACLES = [
+    {
+        level: 1,
+        obstacle: []
+    },
+    {
+        level: 2,
+        obstacle: [
+            {
+                position: {
+                    x: 100,
+                    y: 200,
+                    width: 250,
+                    height: 5,
+                    color: "black",
+                }
+            },
+        ]
+    },
+    {
+        level: 3,
+        obstacle: [
+            {
+                position: {
+                    x: 100,
+                    y: 50,
+                    width: 5,
+                    height: 300,
+                    color: "black",
+                }
+            },
+            {
+                position: {
+                    x: 300,
+                    y: 50,
+                    width: 5,
+                    height: 300,
+                    color: "black",
+                }
+            },
+        ]
+    },
+    {
+        level: 4,
+        obstacle: [
+            {
+                position: {
+                    x: 10,
+                    y: 10,
+                    width: 5,
+                    height: 380,
+                    color: "black",
+                }
+            },
+            {
+                position: {
+                    x: 10,
+                    y: 10,
+                    width: 380,
+                    height: 5,
+                    color: "black",
+                }
+            },
+        ]
+    },
+    {
+        level: 5,
+        obstacle: [
+            {
+                position: {
+                    x: 5,
+                    y: 200,
+                    width: 390,
+                    height: 5,
+                    color: "black",
+                }
+            },
+            {
+                position: {
+                    x: 200,
+                    y: 5,
+                    width: 5,
+                    height: 390,
+                    color: "black",
+                }
+            },
+        ]
+    },
+]
+
 const LEVELS = [
     { level: 1, speed: 150, },
     { level: 2, speed: 100, },
@@ -29,7 +119,7 @@ function initPosition() {
 
 function initHeadAndBody() {
     let head = initPosition();
-    let body = [{x: head.x, y: head.y}];
+    let body = [{ x: head.x, y: head.y }];
     return {
         head: head,
         body: body,
@@ -91,12 +181,12 @@ function drawScore(snake) {
 
     scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     scoreCtx.font = "30px Arial";
-    scoreCtx.fillStyle = snake.color
+    scoreCtx.fillStyle = "black"
     scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
 }
 
 function draw() {
-    setInterval(function() {
+    setInterval(function () {
         if (snake1.score === 0) {
             drawLevel(snake1.score);
         }
@@ -104,7 +194,9 @@ function draw() {
         let ctx = snakeCanvas.getContext("2d");
 
         ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        
+
+        showObstacle(snake1);
+
         drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color, "snakeHeadIcon");
         for (let i = 1; i < snake1.body.length; i++) {
             drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
@@ -112,15 +204,26 @@ function draw() {
         //menampilkan apel
         for (let i = 0; i < apples.length; i++) {
             let apple = apples[i];
-            showIcon(ctx,"apple",apple.position.x * CELL_SIZE, apple.position.y * CELL_SIZE, CELL_SIZE,CELL_SIZE);
+            showIcon(ctx, "apple", apple.position.x * CELL_SIZE, apple.position.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
 
         if (checkPrim(snake1)) {
-                drawCell(ctx, heart.position.x, heart.position.y, heart.color, "lifeIcon");
+            drawCell(ctx, heart.position.x, heart.position.y, heart.color, "lifeIcon");
         }
 
         drawScore(snake1);
     }, REDRAW_INTERVAL);
+}
+
+function resetSnake(snake) {
+    return {
+        color: snake.color,
+        ...initHeadAndBody(),
+        direction: initDirection(),
+        score: snake.score,
+        life: snake.life,
+        level: snake.level,
+    }
 }
 
 function teleport(snake) {
@@ -144,15 +247,35 @@ function eat(snake, apples, heart) {
         if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
             apple.position = initPosition();
             snake.score++;
-            snake.body.push({x: snake.head.x, y: snake.head.y});
+            snake.body.push({ x: snake.head.x, y: snake.head.y });
             drawLevel(snake.score);
         } else if (snake.head.x == heart.position.x && snake.head.y == heart.position.y) {
             heart.position = initPosition();
             snake.score++;
             snake.life++;
-            snake.body.push({x: snake.head.x, y: snake.head.y});
+            snake.body.push({ x: snake.head.x, y: snake.head.y });
             console.log(snake.life);
             drawLevel(snake.score);
+        }
+    }
+}
+
+function drawObstacle(ctx, x, y, width, height, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, width, height);
+}
+
+function showObstacle(snake) {
+    let snakeCanvas = document.getElementById("snakeBoard");
+    let ctx = snakeCanvas.getContext("2d");
+    for (let i = 0; i < OBSTACLES.length; i++) {
+        for (let j = 0; j < OBSTACLES[i].obstacle.length; j++) {
+            if (snake.level == OBSTACLES[i].level) {
+                if (OBSTACLES[i].obstacle.length > 0) {
+                    ctx.fillStyle = OBSTACLES[i].obstacle[j].position.color;
+                    drawObstacle(ctx, OBSTACLES[i].obstacle[j].position.x, OBSTACLES[i].obstacle[j].position.y, OBSTACLES[i].obstacle[j].position.width, OBSTACLES[i].obstacle[j].position.height, OBSTACLES[i].obstacle[j].color);
+                }
+            }
         }
     }
 }
@@ -193,9 +316,28 @@ function checkCollision(snakes) {
             }
         }
     }
+
+    //nabrak tembok
+    for (let i = 0; i < OBSTACLES.length; i++) {
+        for (let j = 0; j < OBSTACLES[i].obstacle.length; j++) {
+            if (snake1.level == OBSTACLES[i].level && OBSTACLES[i].obstacle.length > 0) {
+                if (snake1.head.x >= (Math.floor(OBSTACLES[i].obstacle[j].position.x / CELL_SIZE)) && snake1.head.y >= (Math.floor(OBSTACLES[i].obstacle[j].position.y / CELL_SIZE))
+                    && snake1.head.y <= (Math.floor(OBSTACLES[i].obstacle[j].position.height / HEIGHT)) + Math.floor(OBSTACLES[i].obstacle[j].position.y / CELL_SIZE)
+                    && snake1.head.x < (Math.floor(OBSTACLES[i].obstacle[j].position.x / CELL_SIZE) + Math.ceil(OBSTACLES[i].obstacle[j].position.width / WIDTH))) {
+                    isCollide = true;
+                }
+            }
+        }
+    }
+
     if (isCollide) {
-        alert("Game over");
-        snake1 = initSnake("green");
+        if (snake1.life === 1) {
+            alert("Game over");
+            snake1 = initSnake("green");
+        } else {
+            snake1.life--;
+            snake1 = resetSnake(snake1);
+        }
     }
     return isCollide;
 }
@@ -217,7 +359,7 @@ function move(snake) {
     }
     moveBody(snake);
     if (!checkCollision([snake1])) {
-        setTimeout(function() {
+        setTimeout(function () {
             move(snake);
         }, MOVE_INTERVAL);
     } else {
@@ -279,13 +421,13 @@ function drawLevel(score) {
     if (score == 0) {
         levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         levelCtx.font = "30px Arial";
-        levelCtx.fillStyle = snake1.color
+        levelCtx.fillStyle = "black"
         levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
     } else if ((score % 5) == 0) {
         snake1.level++;
         levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         levelCtx.font = "30px Arial";
-        levelCtx.fillStyle = snake1.color
+        levelCtx.fillStyle = "black"
         levelCtx.fillText("Level : " + snake1.level, 10, levelCanvas.scrollHeight / 2);
         if (snake1.level <= 5) {
             alert("level up");

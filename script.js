@@ -213,9 +213,9 @@ function draw() {
 
         showObstacle(snake1);
 
-        drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color, "snakeHeadIcon");
+        drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color, "snakeHeadIcon2");
         for (let i = 1; i < snake1.body.length; i++) {
-            drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
+            drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color, "body");
         }
         //menampilkan apel
         for (let i = 0; i < apples.length; i++) {
